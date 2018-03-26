@@ -277,9 +277,18 @@ int main(int argc, const char * argv[]) {
         get_neighbors(&list_open,pCurr);
         
     }
+    pAStarNode p,tmp;
+    p = list_close;
+    while (p != NULL) {
+        tmp = p;
+        p = p->s_next;
+        free(tmp);
+    }
+    
     if (top_result < 0) {
         printf("Can not find the result;\r\n");
     }
+    printf("Total Found:%d",top_result);
     while (top_result >= 0) {
         m_print_node_queen(list_result[top_result--]);
         printf("\r\n");
