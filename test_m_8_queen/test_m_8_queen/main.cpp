@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-#define N 5
+#define N 8
 
 int m_queen[N][N];
 
@@ -63,7 +63,7 @@ int tmp_count_node(pAStarNode pNode)
     pAStarNode p = pNode;
     while (p!= NULL) {
         nodecount++;
-        m_print_node_queen(p);
+//        m_print_node_queen(p);
         p = p->s_next;
     }
     return nodecount;
@@ -281,7 +281,7 @@ int main(int argc, const char * argv[]) {
         printf("Can not find the result;\r\n");
     }
     while (top_result >= 0) {
-//        m_print_node_queen(list_result[top_result--]);
+        m_print_node_queen(list_result[top_result--]);
         printf("\r\n");
     }
     
