@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-#define N 8
+#define N 16
 
 int m_queen[N][N];
 

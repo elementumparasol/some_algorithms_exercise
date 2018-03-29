@@ -161,15 +161,112 @@ void combine(int num,int k_choose,int *x)
     }
 }
 
+typedef struct S_virtual_node{
+    int b_tree_index;
+    bool disable;
+} S_virtual_node ,*p_m_virtual_node;
+S_virtual_node m_virtual_node[100];
+int comb_node[100];
+int comb_top = -1;
+int top = -1;
+
+int get_tree_weight_and_mark(int stack_p,int n,int k)
+{
+    int sum = 0;
+    int p = m_virtual_node[stack_p].b_tree_index;
+    while (p>=1) {
+        sum = sum + p%2;
+        p = (p-1)/2;
+    }
+    if (sum == k) {
+        m_virtual_node[stack_p].disable = true;
+    }else{
+        if (p > (2<<(n-1))){
+            m_virtual_node[stack_p].disable = true;
+        }
+    }
+    return sum;
+}
+
+
+
+void tree_combination(int n,int k)
+{
+    comb_top = -1;
+    top = -1;
+    int p = 0;
+    int top_l = 0;
+    m_virtual_node[p].disable = false;
+    m_virtual_node[p].b_tree_index = 0;
+    top = p;   //push
+    do{
+        p = top--;  //pop;
+        top_l = top;
+        if (get_tree_weight_and_mark(p,n,k) < k) {
+            if ( 2*m_virtual_node[p].b_tree_index+1 < (2<<n) && !m_virtual_node[p].disable ) {
+                top++;
+                top_l = top;
+                
+                top++;
+                top_l = top;
+                m_virtual_node[top].disable = false;
+                m_virtual_node[top].b_tree_index = 2 * m_virtual_node[p].b_tree_index + 2;   //right child push
+                top++;
+                top_l = top;
+                m_virtual_node[top].disable = false;
+                m_virtual_node[top].b_tree_index = 2 * m_virtual_node[p].b_tree_index + 1;   //left child
+            }
+        }else{    // equal k
+            comb_node[++comb_top] = m_virtual_node[p].b_tree_index;
+        }
+    }while (top >= 0);
+
+}
+int mini_stack[100];
+int mini_top = -1;
+
+int get_tree_weight(int node)
+{
+    int sum = 0;
+    int p = node;
+    while (p>=1) {
+        sum = sum + p%2;
+        p = (p-1)/2;
+    }
+    return sum;
+}
+
+
+void virtual_tree_travel(int n,int k)
+{
+    mini_top = -1;
+    comb_top = -1;
+    int p = 0;
+    do{
+        while(p < ((2<<n)-1)){
+            mini_stack[++mini_top] = p;
+            p = p*2+1;
+        }
+        if (mini_top >= 0) {
+            p = mini_stack[mini_top--];
+            if (get_tree_weight(p) == k && p%2==1) {
+                comb_node[++comb_top] = p;
+            }
+            p = p+1;
+        }
+    }while (p < ((2<<n)-1) || mini_top >= 0) ;
+}
+
 
 int main()
 {
     printf("AA\r\n");
     int n = NN,k =KK;
     int *x = (int*)malloc(sizeof(int)*n);
-    for (int i=0; i <= n; i++) {
-        x[i] = 0;
-    }
-    combine(n, k, x);
+//    for (int i=0; i <= n; i++) {
+//        x[i] = 0;
+//    }
+//    tree_combination(n, k);
+    virtual_tree_travel(n, k);
     return 0;
 }
